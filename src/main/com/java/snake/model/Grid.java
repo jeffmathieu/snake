@@ -1,68 +1,22 @@
 package com.java.snake.model;
 
+import java.awt.*;
+
+
 public class Grid {
 
-    private final int width;
-    private final int height;
-    private char[][] cells;
+    public static final int CELL_SIZE = 20;
+    public static final int COLS = 30;
+    public static final int ROWS = 20;
 
-    private Snake snake;
-    private Food food;
-
-    private Direction direction;
-
-    public Grid(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.cells = new char[height][width];
-
-        this.snake = new Snake(width, height);
-        this.food = new Food();
-
-        this.direction = Direction.RIGHT;
-        clear();
+    public static Dimension getPanelSize() {
+        return new Dimension(CELL_SIZE * COLS, CELL_SIZE * ROWS);
     }
 
-    public void clear() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                cells[y][x] = ' ';
-            }
-        }
-    }
-
-    public void setCell(int x, int y, char c) {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            cells[y][x] = c;
-        }
-    }
-
-    public void printGrid() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                System.out.print(cells[y][x]);
-            }
-            System.out.println();
-        }
-    }
-
-    public void move() {
-        //TODO: move
-    }
-
-    public void setDirection(Direction newDirection) {
-        direction = newDirection;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public char getCell(int x, int y) {
-        return cells[x][y];
+    /**
+     * Zet een vakje-coördinaat (gridX, gridY) om naar pixel-coördinaten (linksboven van dat vakje).
+     */
+    public static Point gridToPixel(int gridX, int gridY) {
+        return new Point(gridX * CELL_SIZE, gridY * CELL_SIZE);
     }
 }
