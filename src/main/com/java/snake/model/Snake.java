@@ -5,28 +5,23 @@ import java.util.LinkedList;
 
 public class Snake {
 
-    private LinkedList<Point> body;      // body.getFirst() is head
+    private LinkedList<Point> body;
     private Direction currentDirection;
-    private boolean shouldGrow;          // Flag: volgende move niet het staartdeel verwijderen
+    private boolean shouldGrow;
 
     public Snake() {
-        // Startpositie: midden van het scherm
         int startX = Grid.COLS / 2;
         int startY = Grid.ROWS / 2;
         body = new LinkedList<>();
 
-        // Beginlengte 3: head + 2 segmenten naar links
         body.add(new Point(startX, startY));
         body.add(new Point(startX - 1, startY));
         body.add(new Point(startX - 2, startY));
 
-        currentDirection = Direction.RIGHT;  // Beginrichting
+        currentDirection = Direction.RIGHT;
         shouldGrow = false;
     }
 
-    /**
-     * Verplaats de slang één stap in de gewenste richting (mits niet tegenovergesteld aan huidige richting).
-     */
     public void move(Direction newDirection) {
         // Voorkom 180° bocht: negeer als tegenovergestelde
         if (!newDirection.isOpposite(currentDirection)) {
@@ -48,7 +43,6 @@ public class Snake {
         Point newHead = new Point(newX, newY);
         body.addFirst(newHead);
 
-        // Als we niet moeten groeien, verwijder het laatste segment
         if (!shouldGrow) {
             body.removeLast();
         } else {
@@ -57,17 +51,11 @@ public class Snake {
         }
     }
 
-    /**
-     * Zet de vlag om te groeien. Bij de eerstvolgende move wordt de staart niet verwijderd,
-     * waardoor de slang 1 segment langer wordt.
-     */
+
     public void grow() {
         shouldGrow = true;
     }
 
-    /**
-     * Check botsing met eigen lichaam (head botst met één van de andere segmenten).
-     */
     public boolean isCollidingWithSelf() {
         Point head = body.getFirst();
         // Check alle segmenten behalve index 0
@@ -79,33 +67,24 @@ public class Snake {
         return false;
     }
 
-    /**
-     * Check botsing met de muren (buiten grid-grenzen).
-     */
+
     public boolean isCollidingWithWall() {
         Point head = body.getFirst();
         return head.x < 0 || head.x >= Grid.COLS || head.y < 0 || head.y >= Grid.ROWS;
     }
 
-    /**
-     * Geeft de volledige lijst met segmenten (in grid-coördinaten).
-     */
     public List<Point> getBody() {
         return body;
     }
 
-    /**
-     * Geeft de huidige positie van de kop (head).
-     */
     public Point getHead() {
         return body.getFirst();
     }
 
-    /**
-     * Geeft huidige richting (kan handig zijn om in GamePanel te lezen).
-     */
     public Direction getDirection() {
         return currentDirection;
     }
+
+
 
 }
