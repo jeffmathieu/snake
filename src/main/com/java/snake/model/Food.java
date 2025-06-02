@@ -18,15 +18,14 @@ public class Food {
     public void respawn(LinkedList<Point> snakeBody) {
         LinkedList<Point> freeCells = new LinkedList<>();
 
-        for (int x = 0; x < Grid.COLS; x++) {
-            for (int y = 0; y < Grid.ROWS; y++) {
+        for (int x = 1; x < Grid.COLS - 1; x++) {
+            for (int y = 1; y < Grid.ROWS - 2; y++) {
                 Point p = new Point(x, y);
                 if (!snakeBody.contains(p)) {
                     freeCells.add(p);
                 }
             }
         }
-
 
         int idx = random.nextInt(freeCells.size());
         position = freeCells.get(idx);

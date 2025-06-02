@@ -19,6 +19,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private final Snake snake;
     private final Food food;
     private Direction direction;
+    private boolean gameOver = false;
+    private Direction nextDirection = Direction.RIGHT;
 
     public GamePanel() {
         this.grid = new Grid();
@@ -26,7 +28,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
         addKeyListener(this);
 
-        this.timer = new Timer(1000/3, this);
+        this.timer = new Timer(100, this);
         this.snake = new Snake();
         this.food = new Food();
         this.direction = Direction.RIGHT;
@@ -45,24 +47,53 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         timer.stop();
     }
 
+
+    public void stopGame() {
+        timer.stop();
+        this.gameOver = true;
+        repaint();
+
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int y = 0; y < grid.getHeight(); y++) {
-            for (int x = 0; x < grid.getWidth(); x++) {
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
-                g.setColor(Color.PINK);
-                for (java.awt.Point p : snake.getBody()) {
-                    int offSet = 1;
-                    g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2*offSet, cellSize - 2*offSet);
+        if (!gameOver) {
+            for (int y = 0; y < grid.getHeight(); y++) {
+                for (int x = 0; x < grid.getWidth(); x++) {
+
+                    g.setColor(Color.PINK);
+                    for (java.awt.Point p : snake.getBody()) {
+                        int offSet = 1;
+                        g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
+                    }
+                    g.setColor(Color.RED);
+                    Point p = food.getPosition();
+                    g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
+
+//                    g.setColor(Color.PINK);
+//                    g.fillRect(x * cellSize, y * cellSize, 5, 5);
                 }
-                g.setColor(Color.RED);
-                Point p = food.getPosition();
-                g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
             }
+        } else {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            String msg = "game over";
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 48));
+            FontMetrics fm = g.getFontMetrics();
+            int x = (getWidth() - fm.stringWidth(msg)) / 2;
+            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+            g.drawString(msg, x, y);
         }
+    }
+
+    public void repaintPLS() {
+        repaint();
     }
 
     @Override
@@ -72,7 +103,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        snake.move(direction);
+        direction = nextDirection;
+        if (snake.getGameOver()) stopGame();
+        snake.move(direction, food);
         repaint();
     }
 
@@ -84,11 +117,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> setDirection(Direction.UP);
-            case KeyEvent.VK_DOWN -> setDirection(Direction.DOWN);
-            case KeyEvent.VK_LEFT -> setDirection(Direction.LEFT);
-            case KeyEvent.VK_RIGHT -> setDirection(Direction.RIGHT);
+            case KeyEvent.VK_UP -> nextDirection = Direction.UP;
+            case KeyEvent.VK_DOWN -> nextDirection = Direction.DOWN;
+            case KeyEvent.VK_LEFT -> nextDirection = Direction.LEFT;
+            case KeyEvent.VK_RIGHT -> nextDirection = Direction.RIGHT;
             case KeyEvent.VK_P -> pauseGame();
+            case KeyEvent.VK_ENTER -> {
+                if (gameOver) {
+                    snake.reset();
+                    food.respawn(snake.getBody());
+                    gameOver = false;
+                    repaint();
+                    nextDirection = Direction.RIGHT;
+                    startGame();
+                }
+            }
         }
     }
 

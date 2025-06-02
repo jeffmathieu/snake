@@ -1,6 +1,7 @@
 package com.java.snake.model;
 
 import com.java.snake.ui.GamePanel;
+import com.java.snake.ui.GameWindow;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -9,7 +10,9 @@ public class Snake {
 
     private LinkedList<Point> body;
     private Direction currentDirection;
-    private boolean shouldGrow;
+    private boolean gameOver = false;
+    private boolean shouldAdded = false;
+    private Point newHead;
 
     public Snake() {
         int startX = Grid.COLS / 2;
@@ -22,37 +25,50 @@ public class Snake {
         body.add(new Point(startX - 3, startY));
 
         currentDirection = Direction.RIGHT;
-        shouldGrow = false;
     }
 
-    public void move(Direction newDirection) {
-        if (!newDirection.isOpposite(currentDirection)) {
-            currentDirection = newDirection;
-        }
+    public void move(Direction newDirection, Food food) {
+        if (! shouldAdded) {
+            if (!newDirection.isOpposite(currentDirection)) {
+                currentDirection = newDirection;
+            }
 
-        Point head = body.getFirst();
-        int newX = head.x;
-        int newY = head.y;
+            Point head = body.getFirst();
+            int newX = head.x;
+            int newY = head.y;
 
-        switch (currentDirection) {
-            case UP:    newY--; break;
-            case DOWN:  newY++; break;
-            case LEFT:  newX--; break;
-            case RIGHT: newX++; break;
-        }
+            switch (currentDirection) {
+                case UP:
+                    newY--;
+                    break;
+                case DOWN:
+                    newY++;
+                    break;
+                case LEFT:
+                    newX--;
+                    break;
+                case RIGHT:
+                    newX++;
+                    break;
+            }
 
-        Point newHead = new Point(newX, newY);
-        body.addFirst(newHead);
+            newHead = new Point(newX, newY);
 
-        if (!shouldGrow) {
-            body.removeLast();
+            if (body.getFirst().x == food.getPosition().x && body.getFirst().y == food.getPosition().y) {
+                shouldAdded = true;
+                food.respawn(body);
+            } else {
+                body.removeLast();
+                body.addFirst(newHead);
+            }
+
+            if (isCollidingWithSelf() || isCollidingWithWall()) {
+                gameOver();
+            }
         } else {
-            shouldGrow = false;
+            body.addFirst(newHead);
+            shouldAdded = false;
         }
-    }
-
-    public void grow() {
-        shouldGrow = true;
     }
 
     public boolean isCollidingWithSelf() {
@@ -65,10 +81,9 @@ public class Snake {
         return false;
     }
 
-
     public boolean isCollidingWithWall() {
         Point head = body.getFirst();
-        return head.x < 0 || head.x >= Grid.COLS || head.y < 0 || head.y >= Grid.ROWS;
+        return head.x < 0 || head.x >= Grid.COLS || head.y < 0 || head.y >= Grid.ROWS - 1;
     }
 
     public LinkedList<Point> getBody() {
@@ -81,6 +96,28 @@ public class Snake {
 
     public Direction getDirection() {
         return currentDirection;
+    }
+
+    private void gameOver() {
+        this.gameOver = true;
+    }
+
+    public boolean getGameOver() {
+        return this.gameOver;
+    }
+
+    public void reset() {
+        int startX = Grid.COLS / 2;
+        int startY = Grid.ROWS / 2;
+        body = new LinkedList<>();
+
+        body.add(new Point(startX, startY));
+        body.add(new Point(startX - 1, startY));
+        body.add(new Point(startX - 2, startY));
+        body.add(new Point(startX - 3, startY));
+
+        currentDirection = Direction.RIGHT;
+        this.gameOver = false;
     }
 
 }

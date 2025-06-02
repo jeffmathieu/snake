@@ -6,8 +6,8 @@ import java.awt.*;
 public class Grid {
 
     public static final int CELL_SIZE = 20;
-    public static final int COLS = 30;
-    public static final int ROWS = 20;
+    public static final int COLS = 40;
+    public static final int ROWS = 30;
 
     public static Dimension getPanelSize() {
         return new Dimension(CELL_SIZE * COLS, CELL_SIZE * ROWS);
