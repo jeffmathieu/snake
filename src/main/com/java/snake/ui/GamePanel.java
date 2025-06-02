@@ -21,6 +21,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Direction direction;
     private boolean gameOver = false;
     private Direction nextDirection = Direction.RIGHT;
+    private Image appleImage;
 
     public GamePanel() {
         this.grid = new Grid();
@@ -32,6 +33,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         this.snake = new Snake();
         this.food = new Food();
         this.direction = Direction.RIGHT;
+
+        try {
+            appleImage = new ImageIcon("src/main/recources/apple.png").getImage();
+        } catch (Exception e) {
+            appleImage = null;
+        }
 
     }
 
@@ -67,16 +74,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     int i = 1;
                     for (java.awt.Point p : snake.getBody()) {
                         int offSet = 1;
-                        if (i == 1) g.setColor(Color.yellow);
+                        if (i == 1) g.setColor(new Color(0x038C1D));
                         else if (i % 2 == 0) g.setColor(new Color(0x276301));
                         else g.setColor(new Color(0x184100));
                         g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
                         i++;
                     }
-                    g.setColor(Color.RED);
-                    Point p = food.getPosition();
-                    g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
 
+                    Point p = food.getPosition();
+
+                    if (appleImage != null) {
+                        g.drawImage(appleImage, p.x * cellSize, p.y * cellSize, cellSize, cellSize, this);
+                    } else {
+                        g.setColor(Color.RED);
+                        g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
+                    }
 //                    g.setColor(Color.PINK);
 //                    g.fillRect(x * cellSize, y * cellSize, 5, 5);
                 }
