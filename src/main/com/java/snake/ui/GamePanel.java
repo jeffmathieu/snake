@@ -7,10 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import com.java.snake.model.Direction;
-import com.java.snake.model.Food;
-import com.java.snake.model.Grid;
-import com.java.snake.model.Snake;
+import com.java.snake.model.*;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private final Grid grid;
@@ -31,7 +28,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         this.timer = new Timer(100, this);
         this.snake = new Snake();
-        this.food = new Food();
+        this.food = new Food(snake);
         this.direction = Direction.RIGHT;
 
         try {
@@ -93,19 +90,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     }
 
                     Point p = food.getPosition();
+                    FoodType type = food.getType();
 
-                    if (appleImage != null) {
-                        //g.drawImage(appleImage, p.x * cellSize, p.y * cellSize, cellSize, cellSize, this);
-
-                        g.setFont(new Font("Arial", Font.BOLD, 20));
-                        FontMetrics fm = g.getFontMetrics();
-                        g.drawString("🍎", p.x * cellSize, p.y * cellSize + fm.getAscent());
-                    } else {
-                        g.setColor(Color.RED);
-                        g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
+                    String str = "";
+                    switch (type) {
+                        case APPLE -> str = "🍎";
+                        case BANANA -> str = "🍌";
+                        case CHERRY -> str = "🍒";
                     }
-//                    g.setColor(Color.PINK);
-//                    g.fillRect(x * cellSize, y * cellSize, 5, 5);
+
+                    g.setFont(new Font("Arial", Font.BOLD, 20));
+                    FontMetrics fm = g.getFontMetrics();
+                    g.drawString(str, p.x * cellSize, p.y * cellSize + fm.getAscent());
+
                 }
             }
             String msg = "Score: " + snake.getScore();
@@ -165,19 +162,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 case KeyEvent.VK_DOWN -> nextDirection = Direction.DOWN;
                 case KeyEvent.VK_LEFT -> nextDirection = Direction.LEFT;
                 case KeyEvent.VK_RIGHT -> nextDirection = Direction.RIGHT;
-                case KeyEvent.VK_ENTER -> {
-                    if (gameOver) {
-                        snake.reset();
-                        food.respawn(snake.getBody());
-                        gameOver = false;
-                        repaint();
-                        nextDirection = Direction.RIGHT;
-                        startGame();
-                    }
-                }
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            if (gameOver) {
+                snake.reset();
+                food.respawn(snake.getBody());
+                gameOver = false;
+                repaint();
+                nextDirection = Direction.RIGHT;
+                startGame();
             }
         }
     }
+
 
     @Override
     public void keyReleased(KeyEvent e) {

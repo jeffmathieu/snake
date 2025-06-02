@@ -8,11 +8,12 @@ import java.util.Random;
 public class Food {
 
     private Point position;
+    private FoodType type;
     private Random random;
 
-    public Food() {
+    public Food(Snake snake) {
         random = new Random();
-        position = new Point(7, 10);
+        respawn(snake.getBody());
     }
 
     public void respawn(LinkedList<Point> snakeBody) {
@@ -29,10 +30,32 @@ public class Food {
 
         int idx = random.nextInt(freeCells.size());
         position = freeCells.get(idx);
+
+        FoodType[] types = FoodType.values();
+        type = types[random.nextInt(types.length)];
     }
 
     public Point getPosition() {
         return position;
+    }
+
+    public FoodType getType() {
+        return type;
+    }
+
+    public int getPoints(FoodType type) {
+        switch(type) {
+            case FoodType.APPLE -> {
+                return 1;
+            }
+            case FoodType.BANANA -> {
+                return 3;
+            }
+            case FoodType.CHERRY -> {
+                return 5;
+            }
+        }
+        return 0;
     }
 
 }

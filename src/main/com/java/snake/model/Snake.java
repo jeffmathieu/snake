@@ -58,7 +58,8 @@ public class Snake {
             if (body.getFirst().x == food.getPosition().x && body.getFirst().y == food.getPosition().y) {
                 shouldAdded = true;
                 food.respawn(body);
-                score += 1;
+                FoodType type = food.getType();
+                score += food.getPoints(type);
             } else {
                 body.removeLast();
                 body.addFirst(newHead);
