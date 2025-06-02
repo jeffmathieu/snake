@@ -51,7 +51,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public void pauseGame() {
-        timer.stop();
+        if (timer.isRunning()) timer.stop();
+        else timer.start();
     }
 
 
@@ -84,7 +85,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     Point p = food.getPosition();
 
                     if (appleImage != null) {
-                        g.drawImage(appleImage, p.x * cellSize, p.y * cellSize, cellSize, cellSize, this);
+                        //g.drawImage(appleImage, p.x * cellSize, p.y * cellSize, cellSize, cellSize, this);
+
+                        g.setFont(new Font("Arial", Font.BOLD, 20));
+                        FontMetrics fm = g.getFontMetrics();
+                        g.drawString("🍎", p.x * cellSize, p.y * cellSize + fm.getAscent());
                     } else {
                         g.setColor(Color.RED);
                         g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
