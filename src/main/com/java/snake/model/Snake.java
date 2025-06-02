@@ -13,6 +13,7 @@ public class Snake {
     private boolean gameOver = false;
     private boolean shouldAdded = false;
     private Point newHead;
+    private int score = 0;
 
     public Snake() {
         int startX = Grid.COLS / 2;
@@ -57,6 +58,7 @@ public class Snake {
             if (body.getFirst().x == food.getPosition().x && body.getFirst().y == food.getPosition().y) {
                 shouldAdded = true;
                 food.respawn(body);
+                score += 1;
             } else {
                 body.removeLast();
                 body.addFirst(newHead);
@@ -106,6 +108,10 @@ public class Snake {
         return this.gameOver;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public void reset() {
         int startX = Grid.COLS / 2;
         int startY = Grid.ROWS / 2;
@@ -117,6 +123,7 @@ public class Snake {
         body.add(new Point(startX - 3, startY));
 
         currentDirection = Direction.RIGHT;
+        score = 0;
         this.gameOver = false;
     }
 

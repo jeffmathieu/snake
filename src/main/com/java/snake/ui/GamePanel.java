@@ -58,17 +58,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         if (!gameOver) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 for (int x = 0; x < grid.getWidth(); x++) {
-
-                    g.setColor(Color.PINK);
+                    int i = 1;
                     for (java.awt.Point p : snake.getBody()) {
                         int offSet = 1;
+                        if (i == 1) g.setColor(Color.yellow);
+                        else if (i % 2 == 0) g.setColor(new Color(0x276301));
+                        else g.setColor(new Color(0x184100));
                         g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
+                        i++;
                     }
                     g.setColor(Color.RED);
                     Point p = food.getPosition();
@@ -78,17 +81,28 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 //                    g.fillRect(x * cellSize, y * cellSize, 5, 5);
                 }
             }
+            String msg = "Score: " + snake.getScore();
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 12));
+            FontMetrics fm = g.getFontMetrics();
+            int x = 2;
+            int y = 2 + fm.getAscent();
+            g.drawString(msg, x, y);
         } else {
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, getWidth(), getHeight());
-
-            String msg = "game over";
+            String msg = "GAME OVER";
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 48));
             FontMetrics fm = g.getFontMetrics();
             int x = (getWidth() - fm.stringWidth(msg)) / 2;
-            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+            int y = (getHeight() - fm.getHeight()) / 3 +  2 * fm.getAscent();
             g.drawString(msg, x, y);
+            String msg1 = "SCORE: " + snake.getScore();
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 28));
+            FontMetrics fm1 = g.getFontMetrics();
+            int x1 = (getWidth() - fm1.stringWidth(msg)) / 2;
+            int y1 = (getHeight() - fm1.getHeight()) / 3 + fm1.getAscent() + 2 * fm.getAscent();
+            g.drawString(msg1, x1, y1);
         }
     }
 
