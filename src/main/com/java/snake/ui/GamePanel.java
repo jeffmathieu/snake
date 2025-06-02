@@ -1,34 +1,46 @@
 package com.java.snake.ui;
 
 import javax.swing.*;
-import java.awt.Graphics;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import com.java.snake.model.Direction;
+import com.java.snake.model.Food;
 import com.java.snake.model.Grid;
+import com.java.snake.model.Snake;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private final Grid grid;
     private final int cellSize = 20;
-    private final int GRID_SIZE_X = 40;
-    private final int GRID_SIZE_Y = 30;
     private final Timer timer;
+    private final Snake snake;
+    private final Food food;
+    private Direction direction;
 
     public GamePanel() {
-        this.grid = new Grid(GRID_SIZE_X, GRID_SIZE_Y);
+        this.grid = new Grid();
         setBackground(Color.pink);
+        setFocusable(true);
+        addKeyListener(this);
 
-        this.timer = new Timer(1000/10, this);
+        this.timer = new Timer(1000/3, this);
+        this.snake = new Snake();
+        this.food = new Food();
+        this.direction = Direction.RIGHT;
 
+    }
+
+    private void setDirection(Direction dir) {
+        this.direction = dir;
     }
 
     public void startGame() {
         timer.start();
     }
+
     public void pauseGame() {
         timer.stop();
     }
@@ -38,17 +50,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         super.paintComponent(g);
         for (int y = 0; y < grid.getHeight(); y++) {
             for (int x = 0; x < grid.getWidth(); x++) {
-                char c = grid.getCell(x, y);
-                if (c == ' ') {
-                    g.setColor(Color.BLACK);
-                } else if (c == 'O') {
-                    g.setColor(Color.GREEN);
-                } else if (c == '*') {
-                    g.setColor(Color.RED);
-                } else {
-                    g.setColor(Color.WHITE);
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, getWidth(), getHeight());
+
+                g.setColor(Color.PINK);
+                for (java.awt.Point p : snake.getBody()) {
+                    int offSet = 1;
+                    g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2*offSet, cellSize - 2*offSet);
                 }
-                g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                g.setColor(Color.RED);
+                Point p = food.getPosition();
+                g.fillRect(p.x * cellSize, p.y * cellSize, cellSize, cellSize);
             }
         }
     }
@@ -60,7 +72,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        grid.move();
+        snake.move(direction);
+        repaint();
     }
 
     @Override
@@ -71,10 +84,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> grid.setDirection(Direction.UP);
-            case KeyEvent.VK_DOWN -> grid.setDirection(Direction.DOWN);
-            case KeyEvent.VK_LEFT -> grid.setDirection(Direction.LEFT);
-            case KeyEvent.VK_RIGHT -> grid.setDirection(Direction.RIGHT);
+            case KeyEvent.VK_UP -> setDirection(Direction.UP);
+            case KeyEvent.VK_DOWN -> setDirection(Direction.DOWN);
+            case KeyEvent.VK_LEFT -> setDirection(Direction.LEFT);
+            case KeyEvent.VK_RIGHT -> setDirection(Direction.RIGHT);
+            case KeyEvent.VK_P -> pauseGame();
         }
     }
 

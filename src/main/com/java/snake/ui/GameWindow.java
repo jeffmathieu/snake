@@ -8,7 +8,7 @@ public class GameWindow extends JFrame {
     public static final int HEIGHT = 600;
 
     public GameWindow() {
-        setTitle("Pong");
+        setTitle("Snake");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

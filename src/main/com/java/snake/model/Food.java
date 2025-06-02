@@ -2,6 +2,7 @@ package com.java.snake.model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Food {
@@ -11,11 +12,11 @@ public class Food {
 
     public Food() {
         random = new Random();
-        position = new Point(0, 0);
+        position = new Point(7, 10);
     }
 
-    public void respawn(List<Point> snakeBody) {
-        List<Point> freeCells = new ArrayList<>();
+    public void respawn(LinkedList<Point> snakeBody) {
+        LinkedList<Point> freeCells = new LinkedList<>();
 
         for (int x = 0; x < Grid.COLS; x++) {
             for (int y = 0; y < Grid.ROWS; y++) {

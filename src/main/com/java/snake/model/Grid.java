@@ -16,4 +16,12 @@ public class Grid {
     public static Point gridToPixel(int gridX, int gridY) {
         return new Point(gridX * CELL_SIZE, gridY * CELL_SIZE);
     }
+
+    public int getWidth() {
+        return COLS;
+    }
+
+    public int getHeight() {
+        return ROWS;
+    }
 }
