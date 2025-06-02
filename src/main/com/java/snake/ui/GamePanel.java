@@ -75,10 +75,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                     int i = 1;
                     for (java.awt.Point p : snake.getBody()) {
                         int offSet = 1;
-                        if (i == 1) g.setColor(new Color(0x038C1D));
-                        else if (i % 2 == 0) g.setColor(new Color(0x276301));
-                        else g.setColor(new Color(0x184100));
-                        g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
+                        if (i == 1) {
+                            g.setColor(new Color(0x038C1D));
+                            g.setFont(new Font("Arial", Font.BOLD, 19));
+                            FontMetrics fm = g.getFontMetrics();
+                            g.drawString("🐍", p.x * cellSize, p.y * cellSize + fm.getAscent());
+
+                            //g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
+                        } else {
+                            if (i % 2 == 0) g.setColor(new Color(0x276301));
+                            else g.setColor(new Color(0x184100));
+                            g.fillRect(p.x * cellSize + offSet, p.y * cellSize + offSet, cellSize - 2 * offSet, cellSize - 2 * offSet);
+                        }
+
+
                         i++;
                     }
 
@@ -147,20 +157,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> nextDirection = Direction.UP;
-            case KeyEvent.VK_DOWN -> nextDirection = Direction.DOWN;
-            case KeyEvent.VK_LEFT -> nextDirection = Direction.LEFT;
-            case KeyEvent.VK_RIGHT -> nextDirection = Direction.RIGHT;
-            case KeyEvent.VK_P -> pauseGame();
-            case KeyEvent.VK_ENTER -> {
-                if (gameOver) {
-                    snake.reset();
-                    food.respawn(snake.getBody());
-                    gameOver = false;
-                    repaint();
-                    nextDirection = Direction.RIGHT;
-                    startGame();
+        if (e.getKeyCode() == KeyEvent.VK_P) pauseGame();
+
+        if (timer.isRunning()) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP -> nextDirection = Direction.UP;
+                case KeyEvent.VK_DOWN -> nextDirection = Direction.DOWN;
+                case KeyEvent.VK_LEFT -> nextDirection = Direction.LEFT;
+                case KeyEvent.VK_RIGHT -> nextDirection = Direction.RIGHT;
+                case KeyEvent.VK_ENTER -> {
+                    if (gameOver) {
+                        snake.reset();
+                        food.respawn(snake.getBody());
+                        gameOver = false;
+                        repaint();
+                        nextDirection = Direction.RIGHT;
+                        startGame();
+                    }
                 }
             }
         }
