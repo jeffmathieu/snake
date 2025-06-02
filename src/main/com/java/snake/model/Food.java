@@ -2,27 +2,26 @@ package com.java.snake.model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Food {
 
     private Point position;
+    private FoodType type;
     private Random random;
 
-    public Food() {
+    public Food(Snake snake) {
         random = new Random();
-        position = new Point(0, 0);
+        this.type = FoodType.APPLE;
+        this.position = new Point(7,10);
     }
 
-    /**
-     * Plaats het voedsel op een willekeurige vrije plek, gegeven de lijst met slang-segmenten.
-     */
-    public void respawn(List<Point> snakeBody) {
-        List<Point> freeCells = new ArrayList<>();
+    public void respawn(LinkedList<Point> snakeBody) {
+        LinkedList<Point> freeCells = new LinkedList<>();
 
-        // Doorloop de hele grid
-        for (int x = 0; x < Grid.COLS; x++) {
-            for (int y = 0; y < Grid.ROWS; y++) {
+        for (int x = 1; x < Grid.COLS - 1; x++) {
+            for (int y = 1; y < Grid.ROWS - 2; y++) {
                 Point p = new Point(x, y);
                 if (!snakeBody.contains(p)) {
                     freeCells.add(p);
@@ -30,13 +29,34 @@ public class Food {
             }
         }
 
-        // Kies een willekeurige vrije cel
         int idx = random.nextInt(freeCells.size());
         position = freeCells.get(idx);
+
+        FoodType[] types = FoodType.values();
+        type = types[random.nextInt(types.length)];
     }
 
     public Point getPosition() {
         return position;
+    }
+
+    public FoodType getType() {
+        return type;
+    }
+
+    public int getPoints(FoodType type) {
+        switch(type) {
+            case FoodType.APPLE -> {
+                return 1;
+            }
+            case FoodType.BANANA -> {
+                return 3;
+            }
+            case FoodType.CHERRY -> {
+                return 5;
+            }
+        }
+        return 0;
     }
 
 }
