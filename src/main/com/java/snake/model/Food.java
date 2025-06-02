@@ -13,7 +13,8 @@ public class Food {
 
     public Food(Snake snake) {
         random = new Random();
-        respawn(snake.getBody());
+        this.type = FoodType.APPLE;
+        this.position = new Point(7,10);
     }
 
     public void respawn(LinkedList<Point> snakeBody) {
