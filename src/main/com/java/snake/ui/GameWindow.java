@@ -5,7 +5,7 @@ import javax.swing.*;
 public class GameWindow extends JFrame {
 
     public static final int WIDTH = 800;
-    public static final int HEIGHT = 605;
+    public static final int HEIGHT = 600;
 
     public GameWindow() {
         setTitle("Snake");
